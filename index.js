@@ -1,8 +1,8 @@
 var midi = require('midi'),
-    io = require('socket.io'),
     express = require('express'),
     app = express(),
-    server = require('http').createServer(app);
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
 
 app.get('/', function(req, res){
     var output = new midi.output();
@@ -10,5 +10,9 @@ app.get('/', function(req, res){
     res.send(name);
 });
 
-app.listen(8000);
+io.sockets.on('connection', function (socket) {
+
+});
+
+server.listen(8000);
 console.log('listening');
