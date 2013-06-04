@@ -1,6 +1,8 @@
 var midi = require('midi'),
+    io = require('socket.io'),
     express = require('express'),
-    app = express();
+    app = express(),
+    server = require('http').createServer(app);
 
 app.get('/', function(req, res){
     var output = new midi.output();
