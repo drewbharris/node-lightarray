@@ -1,0 +1,13 @@
+{
+  "name": "node-lightarray",
+  "description": "LightArray controller",
+  "author": "Drew Harris <drewbharris@gmail.com>",
+  "dependencies": {
+    "express": "3.2.6",
+    "midi": "0.7.0",
+    "socket.io": "0.9.16",
+    "serialport": "1.1.0",
+    "when": "2.1.0"
+  },
+  "engine": "node >= 0.8"
+}
