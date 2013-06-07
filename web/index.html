@@ -2,6 +2,23 @@
   <head>    
   </head>
   <body>
+  	<button id="on">on</button>
+  	<button id="off">off</button>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript">
+	    $(document).ready(function(){
+	    	$("#on").click(function(){
+	    		$.post('/api/v1/array', {
+	    			'values': [127, 127, 127, 127]
+	    		});
+	    	});
+	    	$("#off").click(function(){
+	    		$.post('/api/v1/array', {
+	    			'values': [0, 0, 0, 0]
+	    		});
+	    	});
+	    });
+    	
+    </script>
   </body>
 </html>
