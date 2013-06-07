@@ -1,16 +1,22 @@
 var express = require('express'),
     app = express(),
     server = require('http').createServer(app),
-    io = require('socket.io').listen(server),
+    io = require('socket.io').listen(server, {
+        'log': false
+    }),
     fs = require('fs'),
+    midi = require('midi'),
     LightArray = require('./lib/lightarray');
+
+var version = 1,
+    midiInput,
+    sockets = {};
 
 var lightArray = new LightArray({
     'serialPort': '/dev/tty.usbserial-A6008hrf',
-    'debug': true
+    'debug': false,
+    'sockets': sockets
 });
-
-var version = 1;
 
 app.use("/js", express.static(__dirname + '/web/js'));
 app.use("/css", express.static(__dirname + '/web/css'));
@@ -45,15 +51,30 @@ app.post('/api/v' + version + '/array/:element', function(req, res){
 });
 
 io.sockets.on('connection', function (socket) {
+    sockets[socket.id] = socket;
 
+    socket.on('update', function(data){
+        lightArray.update(data.element, data.value);
+    });
+    socket.on('updateAll', function(data){
+        lightArray.updateAll(data.values);
+    });
+
+    socket.on('disconnect', function(){
+        delete sockets[socket.id];
+    });
 });
 
 lightArray.on('ready', function(){
 
     // initialize midi stuff
-
-
-
+    midiInput = new midi.input();
+    midiInput.openVirtualPort("LightArray");
+    midiInput.on('message', function(time, message){
+        if (message[0] === 176 && 41 < message[1] < 46){
+            lightArray.update(message[1] - 42, message[2]);
+        }
+    });
 
     // initialize web server stuff
 
