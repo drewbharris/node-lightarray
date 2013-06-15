@@ -70,6 +70,7 @@ lightArray.on('ready', function(){
     // initialize midi stuff
     midiInput = new midi.input();
     midiInput.openVirtualPort("LightArray");
+    lightArray.initializeInterval();
     midiInput.on('message', function(time, message){
         if (message[0] === 176 && 41 < message[1] < 46){
             lightArray.update(message[1] - 42, message[2]);
