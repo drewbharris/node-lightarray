@@ -1,0 +1,18 @@
+body {
+	background-color: #000000;
+}
+.lightbox-container {
+	width: 100%;
+	margin: 0 auto;
+}
+.lightbox {
+  width: 200px;
+  height: 200px;
+  border: 1px solid white;
+  margin: 20px;
+  border-radius: 5px;
+  float: left;
+}
+#one, #two, #three, #four {
+	
+}

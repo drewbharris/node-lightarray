@@ -4,12 +4,17 @@ var express = require('express'),
     io = require('socket.io').listen(server, {
         'log': false
     }),
+    ioClient = require('socket.io-client'),
     fs = require('fs'),
     midi = require('midi'),
     LightArray = require('./lib/lightarray');
 
 var version = 1,
     midiInput,
+    relay,
+    relayAddress = "ws://localhost:8001",
+    relayConnectionInterval = 3000,
+    relayConnectionTimer,
     sockets = {};
 
 var lightArray = new LightArray({
@@ -70,12 +75,33 @@ lightArray.on('ready', function(){
     // initialize midi stuff
     midiInput = new midi.input();
     midiInput.openVirtualPort("LightArray");
-    lightArray.initializeInterval();
+    lightArray.start();
     midiInput.on('message', function(time, message){
         if (message[0] === 176 && 41 < message[1] < 46){
             lightArray.update(message[1] - 42, message[2]);
         }
     });
+
+    // initialize relay
+    relay = ioClient.connect(relayAddress);
+    lightArray.setRelay(relay);
+    relay.on('data', function(data){
+        lightArray.updateAll(data.values);
+    });
+    // relayConnectionTimer = setInterval(function(){
+    //     console.log('attempting connection');
+    //     console.log(relay.socket.connected);
+    //     if (!relay.socket.connected){
+    //         delete relay;
+    //         relay = ioClient.connect(relayAddress);
+    //         lightArray.setRelay(relay);
+    //         relay.on('data', function(data){
+    //             lightArray.updateAll(data.values);
+    //         });
+    //     }
+    // }, relayConnectionInterval);
+
+
 
     // initialize web server stuff
 
