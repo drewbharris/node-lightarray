@@ -12,7 +12,7 @@ var express = require('express'),
 var version = 1,
     midiInput,
     relay,
-    relayAddress = "ws://localhost:8001",
+    relayAddress = "ws://distorteddisco.com:8003",
     relayConnectionInterval = 3000,
     relayConnectionTimer,
     sockets = {};
@@ -76,9 +76,18 @@ lightArray.on('ready', function(){
     midiInput = new midi.input();
     midiInput.openVirtualPort("LightArray");
     lightArray.start();
+    // midiInput.on('message', function(time, message){
+    //     if (message[0] === 176 && 41 < message[1] < 46){
+    //         lightArray.controlUpdate(message[1] - 42, message[2]);
+    //     }
+    // });
     midiInput.on('message', function(time, message){
-        if (message[0] === 176 && 41 < message[1] < 46){
-            lightArray.update(message[1] - 42, message[2]);
+        // 144, 60, 100 to 67
+        if (message[0] === 144 && 60 <= message[1] < 64){
+            lightArray.noteUpdateLong(message[1] - 60, message[2]);
+        }
+        if (message[0] === 144 && 64 <= message[1] < 68){
+            lightArray.noteUpdateShort(message[1] - 64, message[2]);
         }
     });
 
@@ -106,6 +115,6 @@ lightArray.on('ready', function(){
     // initialize web server stuff
 
     server.listen(8000);
-    console.log('listening');
+    console.log('listening on 8000');
 
 });
