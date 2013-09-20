@@ -18,7 +18,7 @@ var version = 1,
     sockets = {};
 
 var lightArray = new LightArray({
-    'serialPort': '/dev/tty.usbserial-A6008hrf',
+    'serialPort': '/dev/tty.usbmodem15001',
     'debug': false,
     'sockets': sockets
 });
