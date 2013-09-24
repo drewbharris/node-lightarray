@@ -3,8 +3,8 @@ var io = require('socket.io').listen(8001),
     mdns = require('mdns');
 
 var lightArray = new LightArray({
-    'serialPort': '/dev/tty.usbmodem15001',
-    'debug': true,
+    'serialPort': '/dev/ttyACM0',
+    'debug': false,
     'sockets': {}
 });
 
@@ -14,7 +14,7 @@ lightArray.on('ready', function(){
     io.sockets.on('connection', function (socket) {
         console.log('connection from host');
         socket.on('updateAll', function (data) {
-            lightArray.updateAll(data);
+            lightArray.writeToArduino(data.values);
         });
     });
     ad = mdns.createAdvertisement(new mdns.ServiceType('lightarray', 'tcp'), 8001);
