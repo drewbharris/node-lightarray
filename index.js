@@ -2,7 +2,7 @@ var express = require('express'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server, {
-        'log': true
+        'log': false
     }),
     ioClient = require('socket.io-client'),
     fs = require('fs'),
@@ -17,7 +17,8 @@ var version = 1,
 var lightArray = new LightArray({
     'serialPort': '/dev/tty.usbmodem15001',
     'debug': true,
-    'sockets': sockets
+    'sockets': sockets,
+    'device': process.env.DEVICE
 });
 
 var remote,

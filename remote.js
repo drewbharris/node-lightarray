@@ -5,7 +5,8 @@ var io = require('socket.io').listen(8001),
 var lightArray = new LightArray({
     'serialPort': '/dev/ttyACM0',
     'debug': false,
-    'sockets': {}
+    'sockets': {},
+    'device': 'arduino'
 });
 
 var ad;
