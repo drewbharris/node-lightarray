@@ -2,26 +2,28 @@ var express = require('express'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server, {
-        'log': false
+        'log': true
     }),
     ioClient = require('socket.io-client'),
     fs = require('fs'),
     midi = require('midi'),
-    LightArray = require('./lib/lightarray');
+    LightArray = require('./lib/lightarray'),
+    mdns = require('mdns');
 
 var version = 1,
     midiInput,
-    relay,
-    relayAddress = "ws://localhost:8001",
-    relayConnectionInterval = 3000,
-    relayConnectionTimer,
     sockets = {};
 
 var lightArray = new LightArray({
     'serialPort': '/dev/tty.usbmodem15001',
-    'debug': false,
+    'debug': true,
     'sockets': sockets
 });
+
+var remote,
+    remoteBrowser,
+    remoteAddress,
+    remotePort;
 
 app.use("/js", express.static(__dirname + '/web/js'));
 app.use("/css", express.static(__dirname + '/web/css'));
@@ -82,26 +84,19 @@ lightArray.on('ready', function(){
         }
     });
 
-    // initialize relay
-    relay = ioClient.connect(relayAddress);
-    lightArray.setRelay(relay);
-    relay.on('data', function(data){
-        lightArray.updateAll(data.values);
+    // initialize remote
+    remoteBrowser = mdns.createBrowser(new mdns.ServiceType('lightarray', 'tcp'));
+    remoteBrowser.on('serviceUp', function(service) {
+        remoteAddress = service.addresses[0];
+        remotePort = service.port;
+        console.log('attempting connection to remote at ' + remoteAddress + ':' + remotePort)
+        remote = ioClient.connect("http://" + remoteAddress + ":" + remotePort);
+        if (remote){
+            console.log('successfully connected to remote');
+            lightArray.setRemote(remote);
+        }
     });
-    // relayConnectionTimer = setInterval(function(){
-    //     console.log('attempting connection');
-    //     console.log(relay.socket.connected);
-    //     if (!relay.socket.connected){
-    //         delete relay;
-    //         relay = ioClient.connect(relayAddress);
-    //         lightArray.setRelay(relay);
-    //         relay.on('data', function(data){
-    //             lightArray.updateAll(data.values);
-    //         });
-    //     }
-    // }, relayConnectionInterval);
-
-
+    remoteBrowser.start();
 
     // initialize web server stuff
 

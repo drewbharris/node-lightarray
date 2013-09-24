@@ -14,6 +14,7 @@
 	  	<div class="lightbox" id="two"></div>
 	  	<div class="lightbox" id="three"></div>
 	  	<div class="lightbox" id="four"></div>
+      <div class="lightbox" id="five"></div>
   	</div>
     <script src="/js/jquery-1.9.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -22,7 +23,7 @@
         cycler,
         framerate = 30,
         i,
-        values = [0, 0, 0, 0];
+        values = [0, 0, 0, 0, 0];
 
       var setValues = function(data){
         values = data;
@@ -33,6 +34,7 @@
         $("#two").css('background-color', 'hsl(0, 0%, ' + Math.round((values[1]/127)*100) + '%)');
         $("#three").css('background-color', 'hsl(0, 0%, ' + Math.round((values[2]/127)*100) + '%)');
         $("#four").css('background-color', 'hsl(0, 0%, ' + Math.round((values[3]/127)*100) + '%)');
+        $("#five").css('background-color', 'hsl(0, 0%, ' + Math.round((values[4]/127)*100) + '%)');
       }
 
     	socket.on('data', function(data){
@@ -43,12 +45,12 @@
 	    $(document).ready(function(){
 	    	$("#on").click(function(){
 	    		socket.emit('updateAll', {
-	    			'values': [127, 127, 127, 127]
+	    			'values': [127, 127, 127, 127, 127]
 	    		});
 	    	});
 	    	$("#off").click(function(){
 	    		socket.emit('updateAll', {
-	    			'values': [0, 0, 0, 0]
+	    			'values': [0, 0, 0, 0, 0]
 	    		});
 	    	});
         $("#linear-cycle-all").click(function(){
