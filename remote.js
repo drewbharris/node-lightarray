@@ -24,7 +24,7 @@ lightArray.on('ready', function(){
             lightArray.writeToArduino(data.values);
         });
         socket.on('disconnect', function(){
-            Pi.writeLed2(1);
+            rPi.writeLed2(1);
         });
     });
     ad = mdns.createAdvertisement(new mdns.ServiceType('lightarray', 'tcp'), 8001);
