@@ -18,11 +18,13 @@ var ad;
 lightArray.on('ready', function(){
     rPi.setup();
     io.sockets.on('connection', function (socket) {
-        rPi.writeLed1(0);
         rPi.writeLed2(0);
         console.log('connection from host');
         socket.on('updateAll', function (data) {
             lightArray.writeToArduino(data.values);
+        });
+        socket.on('disconnect', function(){
+            Pi.writeLed2(1);
         });
     });
     ad = mdns.createAdvertisement(new mdns.ServiceType('lightarray', 'tcp'), 8001);
