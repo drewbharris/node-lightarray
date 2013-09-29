@@ -17,9 +17,9 @@ var ad;
 
 lightArray.on('ready', function(){
     rPi.setup();
-
     io.sockets.on('connection', function (socket) {
-        rPi.led1.set(1);
+        rPi.writeLed1(0);
+        rPi.writeLed2(0);
         console.log('connection from host');
         socket.on('updateAll', function (data) {
             lightArray.writeToArduino(data.values);
