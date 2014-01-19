@@ -16,7 +16,7 @@ var version = 1,
 
 var lightArray = new LightArray({
     'serialPort': '/dev/tty.usbmodem15001',
-    'debug': true,
+    'debug': false,
     'sockets': sockets,
     'device': process.env.DEVICE
 });
@@ -34,6 +34,12 @@ app.use(express.bodyParser());
 
 app.get('/', function(req, res){
     fs.readFile(__dirname + "/web/index.html", "UTF-8", function(err, data){
+        res.send(data);
+    });
+});
+
+app.get('/client', function(req, res){
+    fs.readFile(__dirname + "/web/client.html", "UTF-8", function(err, data){
         res.send(data);
     });
 });
@@ -79,7 +85,7 @@ lightArray.on('ready', function(){
     midiInput = new midi.input();
     midiInput.openVirtualPort("LightArray");
     lightArray.start();
-    midiInput.on('message', function(time, message){
+    midiInput.on('message', function(time, message){console.log(message);
         if (message[0] === 176 && 41 < message[1] < 46){
             lightArray.update(message[1] - 42, message[2]);
         }

@@ -1,0 +1,36 @@
+<html>
+  <head>    
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <style type="text/css">
+      body {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="/js/jquery-1.9.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+    	var socket = io.connect('http://' + location.host),
+        cycler,
+        framerate = 30,
+        i,
+        value = 0
+
+      var setValue = function(newValue){
+        value = newValue;
+      }
+
+      var updateLight = function(){
+        $("body").css('background-color', 'hsl(0, 0%, ' + Math.round((value/127)*100) + '%)');
+      }
+
+	    $(document).ready(function(){
+        socket.on('data', function(data){
+          setValue(data.values[0]);
+          updateLight();
+        });
+	    });
+    </script>
+  </body>
+</html>
