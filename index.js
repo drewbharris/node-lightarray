@@ -15,7 +15,7 @@ var version = 1,
     sockets = {};
 
 var lightArray = new LightArray({
-    'serialPort': '/dev/tty.usbmodem15001',
+    'serialPort': '/dev/tty.usbmodem1421',
     'debug': false,
     'sockets': sockets,
     'device': process.env.DEVICE
